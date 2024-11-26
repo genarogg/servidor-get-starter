@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  portainer:
+    image: portainer/portainer-ce:latest
+    container_name: portainer
+    restart: always
+    ports:
+      - "9000:9000"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data
+
+  mariadb:
+    image: mariadb:latest
+    container_name: mariadb_container
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: dir_informatica
+      MYSQL_DATABASE: controlacademico
+      MYSQL_USER: dir_informatica
+      MYSQL_PASSWORD: dir_informatica
+    ports:
+      - "3306:3306"
+    volumes:
+      - mariadb_data:/var/lib/mysql
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin_container
+    restart: always
+    environment:
+      PMA_HOST: mariadb_container
+      PMA_USER: dir_informatica
+      PMA_PASSWORD: dir_informatica
+      UPLOAD_LIMIT: 64M
+    ports:
+      - "5000:80"
+
+volumes:
+  portainer_data:
+  mariadb_data:
